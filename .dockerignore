@@ -1,0 +1,20 @@
+# Controle de versão e metadados do editor.
+.git/
+.gitignore
+.github/
+.vscode/
+.idea/
+
+# Documentação e material de apoio não vão para a imagem.
+docs/
+*.md
+*.pdf
+*.txt
+
+# Arquivos de composição — a imagem é construída, não orquestrada, aqui.
+docker-compose*.yml
+
+# Ruído do sistema de arquivos.
+.DS_Store
+.fuse_hidden*
+*.log

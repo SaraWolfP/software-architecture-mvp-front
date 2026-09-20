@@ -1,0 +1,47 @@
+# docker-compose.yml
+#
+# Sobe a aplicação inteira — interface, API e banco — com um comando:
+#
+#     docker compose up
+#
+# Fica na raiz do repositório da componente principal (a interface), como pede
+# o enunciado. A imagem da API vem do Docker Hub para que este arquivo funcione
+# a partir de um clone isolado deste repositório: um `build:` apontando para o
+# repositório vizinho quebraria para quem clonar só a interface.
+#
+# Para desenvolver os dois lado a lado, use o arquivo de sobreposição:
+#
+#     docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+
+services:
+  api:
+    image: sarawolfp/software-architecture-mvp-api:1.0
+    container_name: simulador-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"          # publicada só para abrir o Swagger em /apidocs
+    volumes:
+      - dados-api:/app/dados # o SQLite precisa sobreviver à recriação do container
+    environment:
+      DB_PATH: /app/dados/banco_de_dados.db
+      BCB_TIMEOUT: "10"
+      CACHE_TTL_HORAS: "6"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+
+  front:
+    build: .
+    container_name: simulador-front
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  dados-api:

@@ -1,0 +1,45 @@
+# ── Sistema operacional ──────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.fuse_hidden*
+
+# ── Editores ─────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Logs e temporários ───────────────────────────────────────────────
+*.log
+*.tmp
+
+# ── Material de trabalho que não faz parte da entrega ────────────────
+mvp-rules.txt
+READMEBACKEND.md
+roteiro-video.txt
+roteiro-video-entrega.txt
+canvas-url.txt
+GUIA-*.md
+PASSO-A-PASSO-*.md
+PLANO-*.md
+PUBLICAR.md
+ROTEIRO-VIDEO.md
+*.pdf
+
+# SVGs soltos na raiz (os wireframes versionados ficam em docs/wireframes/)
+/0*.svg
+
+# ── Python (quando os dois repos são clonados lado a lado) ───────────
+venv/
+__pycache__/
+*.py[cod]
+
+# ── Bibliotecas de terceiros ─────────────────────────────────────────
+# vendor/ NÃO é ignorado de propósito: versionar as bibliotecas garante
+# que quem clonar o repositório consiga abrir a aplicação sem depender de
+# rede nem de rodar o script de download. Ver scripts/baixar-vendor.sh.
+node_modules/

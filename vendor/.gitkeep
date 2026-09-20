@@ -1,0 +1,2 @@
+Bibliotecas de terceiros (Bootstrap, Bootstrap Icons, Chart.js).
+Rode ./scripts/baixar-vendor.sh na raiz do repositório para popular esta pasta.

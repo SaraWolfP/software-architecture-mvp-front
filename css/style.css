@@ -1,0 +1,872 @@
+/* ═══════════════════════════════════════════════════════════════
+   SIMULADOR DE FINANCIAMENTO IMOBILIÁRIO — Estilos Customizados
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Variáveis de tema ──────────────────────────────────────── */
+:root {
+  --navy:      #0d1b2a;
+  --navy-mid:  #1b2e45;
+  --navy-soft: #243b55;
+  --teal:      #00b4d8;
+  --teal-dark: #0096b7;
+  --green:     #2dc653;
+  --green-dark:#25a847;
+  --amber:     #f9a825;
+  --red:       #e63946;
+  --bg:        #f0f4f8;
+  --card-bg:   #ffffff;
+  --text-main: #1a1a2e;
+  --text-muted:#6b7a90;
+  --border:    #d6e0ee;
+  --shadow-sm: 0 2px 8px rgba(13,27,42,0.08);
+  --shadow-md: 0 6px 24px rgba(13,27,42,0.13);
+  --radius:    12px;
+  --radius-sm: 8px;
+}
+
+/* ── Reset / Base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text-main);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.app-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-icon {
+  font-size: 2rem;
+  color: var(--teal);
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.app-subtitle {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── Cards genéricos ─────────────────────────────────────────── */
+.card-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  background: var(--card-bg);
+  overflow: hidden;
+}
+
+.section-header {
+  background: linear-gradient(90deg, var(--navy-mid) 0%, var(--navy-soft) 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-bottom: none;
+}
+
+/* ── Formulários ─────────────────────────────────────────────── */
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+}
+
+.form-control,
+.form-select {
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(0,180,216,0.15);
+  outline: none;
+}
+
+/* ── Botões ──────────────────────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,180,216,0.35);
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+
+.btn-success:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(45,198,83,0.35);
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+}
+
+.btn-danger-sm {
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.btn-danger-sm:hover {
+  background: var(--red);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Badge de contagem ───────────────────────────────────────── */
+.badge-count {
+  background: var(--teal);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25em 0.65em;
+}
+
+/* ── Tabela de financiamentos ────────────────────────────────── */
+.table-financiamentos,
+.table-amortizacoes {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.table-financiamentos thead th,
+.table-amortizacoes thead th {
+  background: #f5f8fc;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border);
+  padding: 0.6rem 0.9rem;
+  white-space: nowrap;
+}
+
+.table-financiamentos tbody tr,
+.table-amortizacoes tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.table-financiamentos tbody tr:last-child,
+.table-amortizacoes tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table-financiamentos tbody td,
+.table-amortizacoes tbody td {
+  padding: 0.65rem 0.9rem;
+  vertical-align: middle;
+}
+
+/* Linha clicável de financiamentos */
+.table-financiamentos tbody tr.financiamento-row {
+  cursor: pointer;
+}
+
+.table-financiamentos tbody tr.financiamento-row:hover {
+  background: #eaf6ff;
+}
+
+.table-financiamentos tbody tr.financiamento-row.selecionado {
+  background: linear-gradient(90deg, #ddf4ff 0%, #edf9ff 100%);
+  border-left: 3px solid var(--teal);
+}
+
+/* ── Estado vazio ────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-muted);
+  gap: 0.5rem;
+}
+
+.empty-state i {
+  font-size: 2.2rem;
+  opacity: 0.4;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.empty-state-sm {
+  padding: 1.5rem 1rem;
+}
+
+.empty-state-sm i {
+  font-size: 1.5rem;
+}
+
+/* ── Painel vazio (sem seleção) ──────────────────────────────── */
+.painel-vazio-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.6);
+}
+
+.painel-vazio-content {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem;
+}
+
+.painel-vazio-icon {
+  font-size: 3.5rem;
+  color: var(--teal);
+  opacity: 0.4;
+  display: block;
+  margin-bottom: 1rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.painel-vazio-content h4 {
+  font-weight: 700;
+  color: var(--navy-soft);
+  margin-bottom: 0.5rem;
+}
+
+.painel-vazio-content p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Painel ativo — fade in ──────────────────────────────────── */
+.painel-ativo {
+  animation: fadeInUp 0.35s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Cabeçalho do painel ─────────────────────────────────────── */
+.painel-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+.painel-header-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(0,180,216,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--teal);
+  flex-shrink: 0;
+}
+
+.painel-titulo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.modelo-badge {
+  background: var(--teal);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.25em 0.75em;
+  border-radius: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* ── Cards de resumo ─────────────────────────────────────────── */
+.resumo-card {
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.resumo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.resumo-card-total {
+  background: linear-gradient(135deg, #fff7e0, #fff);
+  border-left: 4px solid var(--amber);
+}
+
+.resumo-card-parcelas {
+  background: linear-gradient(135deg, #e8fff0, #fff);
+  border-left: 4px solid var(--green);
+}
+
+.resumo-card-geral {
+  background: linear-gradient(135deg, #e8f0ff, #fff);
+  border-left: 4px solid #4c7ef3;
+}
+
+.resumo-card-pago {
+  background: linear-gradient(135deg, #f0e8ff, #fff);
+  border-left: 4px solid #8b5cf6;
+}
+
+.resumo-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.resumo-valor {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.3;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  transition: color 0.3s;
+}
+
+.resumo-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0;
+}
+
+/* ── Gráfico ─────────────────────────────────────────────────── */
+.grafico-container {
+  position: relative;
+  height: 280px;
+  width: 100%;
+}
+
+/* ── Filtros por ano ─────────────────────────────────────────── */
+.filtros-ano-wrapper {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafd;
+}
+
+.filtros-ano {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.filtro-ano-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.filtro-ano-select {
+  max-width: 160px;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+.toast {
+  min-width: 260px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.toast.bg-success { background: var(--green) !important; }
+.toast.bg-danger  { background: var(--red) !important; }
+
+/* ── Scrollbar personalizada ─────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Responsividade ──────────────────────────────────────────── */
+@media (max-width: 992px) {
+  .grafico-container { height: 240px; }
+  .resumo-valor { font-size: 1rem; }
+}
+
+@media (max-width: 576px) {
+  .app-title  { font-size: 1.1rem; }
+  .app-subtitle { display: none; }
+  .grafico-container { height: 200px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BARRA DE INDICADORES · VEREDITO · LISTAS E CARREGAMENTO
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Link para o Swagger no header ───────────────────────────── */
+.link-swagger {
+  align-items: center;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.7rem;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.link-swagger:hover {
+  color: #fff;
+  border-color: var(--teal);
+  background: rgba(0,180,216,0.15);
+}
+
+/* ── Faixa escura de indicadores (logo abaixo do header) ─────── */
+.indicadores-wrapper {
+  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+  border-bottom: 3px solid var(--teal-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.secao-titulo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.75);
+}
+
+/* Card claro apoiado sobre a faixa escura.
+   Cada card define --cor-indicador inline (vem do JS). */
+.indicador-card {
+  --cor-indicador: var(--teal);
+  border: none;
+  border-left: 4px solid var(--cor-indicador);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.indicador-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.indicador-card .card-body {
+  padding: 0.75rem 1rem;
+}
+
+/* Variação apagada: o Banco Central não devolveu o valor */
+.indicador-card-erro {
+  --cor-indicador: var(--border);
+  background: #f5f8fc;
+  box-shadow: none;
+  opacity: 0.75;
+}
+
+.indicador-card-erro:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.indicador-rotulo {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 0.15rem;
+}
+
+.indicador-valor {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.indicador-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0.2rem 0 0;
+}
+
+.indicador-sparkline {
+  width: 90px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+/* ── Selo de procedência do dado ─────────────────────────────── */
+.origem-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 20px;
+  padding: 0.35em 0.75em;
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8);
+}
+
+.origem-bcb {
+  background: rgba(45,198,83,0.18);
+  color: #8ef0a9;
+}
+
+.origem-cache {
+  background: rgba(249,168,37,0.18);
+  color: #ffd27a;
+}
+
+/* ── Realce do card principal (Amortizar ou Investir?) ───────── */
+.card-destaque {
+  border: 1px solid var(--teal);
+  box-shadow: var(--shadow-md);
+}
+
+.section-header-destaque {
+  background: linear-gradient(90deg, var(--navy) 0%, var(--teal-dark) 100%);
+  font-size: 0.95rem;
+}
+
+/* ── Card de veredito da simulação ───────────────────────────── */
+.veredito-card {
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--text-muted);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.15rem;
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.3s ease both;
+}
+
+.veredito-amortizar {
+  border-left-color: var(--green);
+  background: linear-gradient(135deg, #e8fff0, var(--card-bg) 55%);
+}
+
+.veredito-investir {
+  border-left-color: #4c7ef3;
+  background: linear-gradient(135deg, #e8f0ff, var(--card-bg) 55%);
+}
+
+.veredito-empate {
+  border-left-color: var(--text-muted);
+  background: linear-gradient(135deg, #f0f4f8, var(--card-bg) 55%);
+}
+
+.veredito-icone {
+  font-size: 2.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.veredito-amortizar .veredito-icone { color: var(--green-dark); }
+.veredito-investir  .veredito-icone { color: #4c7ef3; }
+
+.veredito-titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.veredito-diferenca {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.veredito-mensagem {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+/* Versão compacta do veredito, usada na tabela de simulações salvas */
+.badge-veredito {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 20px;
+  border-left: none;
+  padding: 0.3em 0.7em;
+  background: #eef2f7;
+  color: var(--text-muted);
+}
+
+.badge-veredito.veredito-amortizar {
+  background: rgba(45,198,83,0.14);
+  color: var(--green-dark);
+}
+
+.badge-veredito.veredito-investir {
+  background: rgba(76,126,243,0.14);
+  color: #3560d6;
+}
+
+.badge-veredito.veredito-empate {
+  background: #eef2f7;
+  color: var(--text-muted);
+}
+
+/* ── Gráfico comparativo das duas estratégias ────────────────── */
+.grafico-comparativo-container {
+  position: relative;
+  height: 150px;
+  width: 100%;
+}
+
+/* ── Detalhes numéricos da simulação ─────────────────────────── */
+.detalhes-simulacao {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.detalhe-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.5rem 0.65rem;
+  background: #f8fafd;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.detalhe-rotulo {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.detalhe-valor {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+/* ── Títulos de subseção ─────────────────────────────────────── */
+.subsecao-titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--navy-soft);
+}
+
+/* Simulação feita antes de o contrato ser editado */
+.simulacao-obsoleta {
+  opacity: 0.6;
+}
+
+/* ── Tabela de simulações (mesmo tratamento das demais) ──────── */
+.table-simulacoes {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.table-simulacoes thead th {
+  background: #f5f8fc;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border);
+  padding: 0.6rem 0.9rem;
+  white-space: nowrap;
+}
+
+.table-simulacoes tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.table-simulacoes tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table-simulacoes tbody td {
+  padding: 0.65rem 0.9rem;
+  vertical-align: middle;
+}
+
+/* ── Botão de ícone neutro (irmão do .btn-danger-sm) ─────────── */
+.btn-acao-sm {
+  background: transparent;
+  border: 1px solid var(--teal);
+  color: var(--teal-dark);
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.btn-acao-sm:hover {
+  background: var(--teal);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* ── Faixa de filtros da lista ───────────────────────────────── */
+.filtros-lista {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafd;
+}
+
+/* ── Rodapé de paginação ─────────────────────────────────────── */
+.paginacao-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: #f8fafd;
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+}
+
+.paginacao-info {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── Esqueletos de carregamento (shimmer) ────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #e9eef5 25%, #f4f7fb 50%, #e9eef5 75%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.skeleton-linha-curta {
+  height: 12px;
+  width: 40%;
+  margin-bottom: 8px;
+}
+
+.skeleton-linha-grande {
+  height: 26px;
+  width: 70%;
+  margin-bottom: 8px;
+}
+
+/* ── Ícone girando (botão de atualizar indicadores) ──────────── */
+.girando {
+  display: inline-block;
+  animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Responsividade dos blocos acima ─────────────────────────── */
+@media (max-width: 992px) {
+  .grafico-comparativo-container { height: 130px; }
+  .indicador-valor { font-size: 1.4rem; }
+}
+
+@media (max-width: 768px) {
+  /* Na faixa de indicadores os cards empilham; o sparkline sai de cena
+     para não espremer o número. */
+  .indicador-sparkline { display: none; }
+  .veredito-icone  { font-size: 1.8rem; }
+  .veredito-titulo { font-size: 1.1rem; }
+}
+
+@media (max-width: 576px) {
+  .secao-titulo { font-size: 0.7rem; }
+  .origem-badge { font-size: 0.65rem; }
+  .detalhes-simulacao { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+  .paginacao-info { font-size: 0.7rem; }
+}

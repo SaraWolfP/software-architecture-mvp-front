@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Simule amortizações extraordinárias e descubra se vale mais a pena amortizar o financiamento ou investir o dinheiro à taxa de mercado." />
+  <title>Amortiza ou Investe? — Simulador de Financiamento Imobiliário</title>
+
+  <!-- Bibliotecas locais (vendor/) — nenhuma dependência de CDN em tempo de execução -->
+  <link rel="stylesheet" href="vendor/bootstrap.min.css" />
+  <link rel="stylesheet" href="vendor/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ══ HEADER ═══════════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="container-fluid d-flex align-items-center gap-3 py-3">
+      <i class="bi bi-house-fill header-icon"></i>
+      <div class="flex-grow-1">
+        <h1 class="app-title mb-0">Amortiza ou Investe?</h1>
+        <p class="app-subtitle mb-0">
+          Simulador de financiamento imobiliário com dados do Banco Central
+        </p>
+      </div>
+      <a class="link-swagger d-none d-md-inline-flex" id="link-swagger"
+         href="http://localhost:5000/apidocs" target="_blank" rel="noopener">
+        <i class="bi bi-file-earmark-code me-1"></i>API
+      </a>
+    </div>
+  </header>
+
+  <!-- ══ BARRA DE INDICADORES (componente externa) ════════════════════════ -->
+  <section class="indicadores-wrapper">
+    <div class="container-fluid py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="secao-titulo mb-0">
+          <i class="bi bi-bank2 me-2"></i>Indicadores de mercado
+        </h2>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge origem-badge" id="indicadores-origem">carregando…</span>
+          <button class="btn btn-sm btn-outline-light" id="btn-atualizar-indicadores"
+                  title="Reler as séries no Banco Central">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row g-3" id="faixa-indicadores"><!-- preenchido via JS --></div>
+    </div>
+  </section>
+
+  <main class="container-fluid py-4">
+    <div class="row g-4">
+
+      <!-- ══ COLUNA ESQUERDA — Financiamentos ═══════════════════════════ -->
+      <div class="col-xl-4 col-lg-5">
+
+        <!-- Card: Novo Financiamento -->
+        <div class="card card-section mb-4">
+          <div class="card-header section-header">
+            <i class="bi bi-plus-circle-fill me-2"></i>Novo Financiamento
+          </div>
+          <div class="card-body">
+            <form id="form-financiamento" novalidate>
+
+              <div class="mb-3">
+                <label for="fin-nome" class="form-label">Nome do Financiamento</label>
+                <input type="text" class="form-control" id="fin-nome"
+                       placeholder="Ex: Apto Botafogo" maxlength="80" required />
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label for="fin-valor" class="form-label">Valor do Imóvel (R$)</label>
+                  <input type="number" class="form-control" id="fin-valor"
+                         placeholder="500000" min="1" step="0.01" required />
+                </div>
+                <div class="col-6">
+                  <label for="fin-entrada" class="form-label">Entrada (R$)</label>
+                  <input type="number" class="form-control" id="fin-entrada"
+                         placeholder="100000" min="0" step="0.01" required />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label for="fin-taxa" class="form-label">Taxa de Juros (% a.m.)</label>
+                  <input type="number" class="form-control" id="fin-taxa"
+                         placeholder="0.89" min="0.01" max="99" step="0.001" required />
+                  <small class="form-text" id="fin-taxa-dica"></small>
+                </div>
+                <div class="col-6">
+                  <label for="fin-prazo" class="form-label">Prazo (meses)</label>
+                  <input type="number" class="form-control" id="fin-prazo"
+                         placeholder="360" min="1" max="600" required />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label for="fin-data" class="form-label">Início (AAAA-MM)</label>
+                  <input type="month" class="form-control" id="fin-data" required />
+                </div>
+                <div class="col-6">
+                  <label for="fin-modelo" class="form-label">Sistema</label>
+                  <select class="form-select" id="fin-modelo" required>
+                    <option value="SAC">SAC — parcela decrescente</option>
+                    <option value="PRICE">PRICE — parcela fixa</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="fin-erro" class="alert alert-danger d-none py-2" role="alert"></div>
+
+              <button type="submit" class="btn btn-primary w-100" id="btn-cadastrar">
+                <i class="bi bi-plus-lg me-1"></i>Cadastrar Financiamento
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Card: Lista de Financiamentos -->
+        <div class="card card-section">
+          <div class="card-header section-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-list-ul me-2"></i>Meus Financiamentos</span>
+            <span class="badge badge-count" id="badge-total-fin">0</span>
+          </div>
+
+          <!-- Filtros e ordenação (parâmetros de consulta da API) -->
+          <div class="filtros-lista">
+            <div class="row g-2">
+              <div class="col-4">
+                <select class="form-select form-select-sm" id="filtro-modelo" aria-label="Filtrar por sistema">
+                  <option value="">Todos</option>
+                  <option value="SAC">SAC</option>
+                  <option value="PRICE">PRICE</option>
+                </select>
+              </div>
+              <div class="col-5">
+                <select class="form-select form-select-sm" id="filtro-ordenar" aria-label="Ordenar por">
+                  <option value="id">Mais antigos</option>
+                  <option value="nome">Nome</option>
+                  <option value="valor_imovel">Valor do imóvel</option>
+                  <option value="prazo_meses">Prazo</option>
+                  <option value="taxa_juros">Taxa</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <select class="form-select form-select-sm" id="filtro-ordem" aria-label="Direção da ordenação">
+                  <option value="asc">↑</option>
+                  <option value="desc">↓</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <div id="lista-financiamentos-vazia" class="empty-state">
+              <i class="bi bi-inbox"></i>
+              <p>Nenhum financiamento cadastrado ainda.</p>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-financiamentos mb-0" id="tabela-financiamentos">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Financiado</th>
+                    <th>Sistema</th>
+                    <th>Prazo</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-financiamentos"><!-- preenchido via JS --></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Paginação -->
+          <div class="card-footer paginacao-footer d-none" id="paginacao-financiamentos">
+            <button class="btn btn-sm btn-outline-secondary" id="btn-pagina-anterior">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <span class="paginacao-info" id="paginacao-info">—</span>
+            <button class="btn btn-sm btn-outline-secondary" id="btn-pagina-proxima">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /col esquerda -->
+
+      <!-- ══ COLUNA DIREITA — Painel do Financiamento ═══════════════════ -->
+      <div class="col-xl-8 col-lg-7">
+
+        <!-- Estado inicial: sem seleção -->
+        <div id="painel-vazio" class="painel-vazio-container">
+          <div class="painel-vazio-content">
+            <i class="bi bi-cursor-fill painel-vazio-icon"></i>
+            <h4>Selecione um financiamento</h4>
+            <p>
+              Clique em um financiamento na lista para ver o cronograma,<br />
+              lançar amortizações e comparar estratégias.
+            </p>
+          </div>
+        </div>
+
+        <!-- Painel ativo -->
+        <div id="painel-financiamento" class="painel-ativo d-none">
+
+          <!-- Cabeçalho do painel -->
+          <div class="painel-header mb-4">
+            <div class="d-flex align-items-center gap-3">
+              <div class="painel-header-icon">
+                <i class="bi bi-house-door-fill"></i>
+              </div>
+              <div class="flex-grow-1">
+                <h2 class="painel-titulo mb-0" id="painel-nome">—</h2>
+                <span class="badge modelo-badge" id="painel-modelo-badge">SAC</span>
+                <span class="painel-subtitulo" id="painel-resumo-contrato"></span>
+              </div>
+              <button class="btn btn-sm btn-outline-primary" id="btn-editar-financiamento">
+                <i class="bi bi-pencil me-1"></i>Editar
+              </button>
+            </div>
+          </div>
+
+          <!-- Cards de resumo -->
+          <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-3">
+              <div class="card resumo-card resumo-card-total">
+                <div class="card-body">
+                  <p class="resumo-label"><i class="bi bi-cash-stack me-1"></i>Total a Pagar</p>
+                  <p class="resumo-valor" id="resumo-total">R$ —</p>
+                  <p class="resumo-sub">a partir de hoje</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card resumo-card resumo-card-parcelas">
+                <div class="card-body">
+                  <p class="resumo-label"><i class="bi bi-calendar3 me-1"></i>Parcelas Restantes</p>
+                  <p class="resumo-valor" id="resumo-parcelas">—</p>
+                  <p class="resumo-sub" id="resumo-parcelas-sub">meses</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card resumo-card resumo-card-geral">
+                <div class="card-body">
+                  <p class="resumo-label"><i class="bi bi-percent me-1"></i>Juros Totais</p>
+                  <p class="resumo-valor" id="resumo-juros">R$ —</p>
+                  <p class="resumo-sub">custo do financiamento</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card resumo-card resumo-card-pago">
+                <div class="card-body">
+                  <p class="resumo-label"><i class="bi bi-check-circle me-1"></i>Total Já Pago</p>
+                  <p class="resumo-valor" id="resumo-total-pago">R$ —</p>
+                  <p class="resumo-sub" id="resumo-pago-sub">parcelas pagas</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ PAINEL: Amortizar ou Investir? ══════════════════════════ -->
+          <div class="card card-section card-destaque mb-4">
+            <div class="card-header section-header section-header-destaque">
+              <i class="bi bi-scales me-2"></i>Amortizar ou Investir?
+              <small class="d-block fw-normal opacity-75">
+                Compara o juro que você deixa de pagar com o que o mesmo dinheiro renderia no mercado
+              </small>
+            </div>
+            <div class="card-body">
+              <div class="row g-4">
+
+                <!-- Formulário -->
+                <div class="col-lg-4">
+                  <form id="form-simulacao" novalidate>
+                    <div class="mb-3">
+                      <label for="sim-aporte" class="form-label">Quanto você tem disponível (R$)</label>
+                      <input type="number" class="form-control" id="sim-aporte"
+                             placeholder="50000" min="1" step="0.01" required />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="sim-data" class="form-label">Quando (AAAA-MM)</label>
+                      <input type="month" class="form-control" id="sim-data" required />
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                      <div class="col-7">
+                        <label for="sim-indicador" class="form-label">Investiria em</label>
+                        <select class="form-select" id="sim-indicador">
+                          <option value="CDI">CDI</option>
+                          <option value="SELIC">Selic</option>
+                        </select>
+                      </div>
+                      <div class="col-5">
+                        <label for="sim-percentual" class="form-label">% do índice</label>
+                        <input type="number" class="form-control" id="sim-percentual"
+                               value="100" min="1" max="500" step="1" />
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="sim-tipo" class="form-label">Efeito da amortização</label>
+                      <select class="form-select" id="sim-tipo">
+                        <option value="PARCELA">Reduzir o valor das parcelas</option>
+                        <option value="PRAZO">Reduzir o prazo</option>
+                      </select>
+                    </div>
+
+                    <div id="sim-erro" class="alert alert-danger d-none py-2" role="alert"></div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="btn-simular">
+                      <i class="bi bi-calculator me-1"></i>Comparar estratégias
+                    </button>
+                    <button type="button" class="btn btn-link btn-sm w-100 mt-1 d-none"
+                            id="btn-cancelar-edicao-sim">
+                      cancelar edição
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Resultado -->
+                <div class="col-lg-8">
+                  <div id="simulacao-sem-resultado" class="empty-state empty-state-sm">
+                    <i class="bi bi-graph-up"></i>
+                    <p>Informe um valor ao lado para comparar as duas estratégias.</p>
+                  </div>
+
+                  <div id="resultado-simulacao" class="d-none">
+                    <div class="card veredito-card" id="card-veredito"></div>
+
+                    <div class="grafico-comparativo-container">
+                      <canvas id="grafico-comparativo"></canvas>
+                    </div>
+
+                    <div class="detalhes-simulacao" id="simulacao-detalhes"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Histórico de simulações -->
+              <hr class="my-4" />
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="subsecao-titulo mb-0">
+                  <i class="bi bi-clock-history me-2"></i>Simulações salvas
+                </h3>
+                <span class="badge badge-count" id="badge-total-sim">0</span>
+              </div>
+
+              <div id="lista-simulacoes-vazia" class="empty-state empty-state-sm">
+                <i class="bi bi-inbox"></i>
+                <p>Nenhuma simulação salva ainda.</p>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-simulacoes mb-0" id="tabela-simulacoes">
+                  <thead>
+                    <tr>
+                      <th>Aporte</th>
+                      <th>Veredito</th>
+                      <th class="text-end">Diferença</th>
+                      <th class="text-end"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-simulacoes"><!-- preenchido via JS --></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico de parcelas -->
+          <div class="card card-section mb-4">
+            <div class="card-header section-header d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-bar-chart-fill me-2"></i>Cronograma de Parcelas</span>
+              <span class="text-white-50 small" id="grafico-info-parcelas"></span>
+            </div>
+
+            <div class="filtros-ano-wrapper" id="filtros-ano-wrapper">
+              <div id="filtros-ano" class="filtros-ano"></div>
+              <div class="form-check form-switch ms-auto">
+                <input class="form-check-input" type="checkbox" id="switch-composicao" />
+                <label class="form-check-label small" for="switch-composicao">
+                  Separar juros e amortização
+                </label>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div id="grafico-loading" class="text-center py-4 d-none">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Calculando parcelas…</p>
+              </div>
+              <div class="grafico-container">
+                <canvas id="grafico-parcelas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Amortizações -->
+          <div class="row g-4">
+            <div class="col-md-5">
+              <div class="card card-section h-100">
+                <div class="card-header section-header" id="header-form-amortizacao">
+                  <i class="bi bi-plus-circle-fill me-2"></i>Nova Amortização
+                </div>
+                <div class="card-body">
+                  <form id="form-amortizacao" novalidate>
+                    <div class="mb-3">
+                      <label for="amor-valor" class="form-label">Valor Amortizado (R$)</label>
+                      <input type="number" class="form-control" id="amor-valor"
+                             placeholder="50000" min="1" step="0.01" required />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="amor-data" class="form-label">Competência (AAAA-MM)</label>
+                      <input type="month" class="form-control" id="amor-data" required />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="amor-tipo" class="form-label">Efeito</label>
+                      <select class="form-select" id="amor-tipo" required>
+                        <option value="PARCELA">Reduzir o valor das parcelas</option>
+                        <option value="PRAZO">Reduzir o prazo</option>
+                      </select>
+                    </div>
+
+                    <div id="amor-erro" class="alert alert-danger d-none py-2" role="alert"></div>
+
+                    <button type="submit" class="btn btn-success w-100" id="btn-amortizar">
+                      <i class="bi bi-plus-lg me-1"></i>Adicionar Amortização
+                    </button>
+                    <button type="button" class="btn btn-link btn-sm w-100 mt-1 d-none"
+                            id="btn-cancelar-edicao-amor">
+                      cancelar edição
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-7">
+              <div class="card card-section h-100">
+                <div class="card-header section-header d-flex justify-content-between align-items-center">
+                  <span><i class="bi bi-list-check me-2"></i>Amortizações Cadastradas</span>
+                  <span class="badge badge-count" id="badge-total-amor">0</span>
+                </div>
+                <div class="card-body p-0">
+                  <div id="lista-amor-vazia" class="empty-state empty-state-sm">
+                    <i class="bi bi-inbox"></i>
+                    <p>Nenhuma amortização adicionada.</p>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-amortizacoes mb-0" id="tabela-amortizacoes">
+                      <thead>
+                        <tr>
+                          <th>Competência</th>
+                          <th>Valor</th>
+                          <th>Efeito</th>
+                          <th class="text-end"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody-amortizacoes"><!-- preenchido via JS --></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- /row amortizações -->
+
+        </div><!-- /painel-financiamento -->
+      </div><!-- /col direita -->
+    </div><!-- /row principal -->
+  </main>
+
+  <!-- ══ MODAL: Editar Financiamento (PUT) ════════════════════════════════ -->
+  <div class="modal fade" id="modal-editar-financiamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Financiamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <form id="form-editar-financiamento" novalidate>
+          <div class="modal-body">
+            <div class="alert alert-warning py-2 small">
+              <i class="bi bi-exclamation-triangle me-1"></i>
+              Alterar o contrato recalcula todas as parcelas e marca as simulações
+              salvas como desatualizadas.
+            </div>
+
+            <div class="mb-3">
+              <label for="edit-nome" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="edit-nome" maxlength="80" required />
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="edit-valor" class="form-label">Valor do Imóvel (R$)</label>
+                <input type="number" class="form-control" id="edit-valor" min="1" step="0.01" required />
+              </div>
+              <div class="col-6">
+                <label for="edit-entrada" class="form-label">Entrada (R$)</label>
+                <input type="number" class="form-control" id="edit-entrada" min="0" step="0.01" required />
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="edit-taxa" class="form-label">Taxa (% a.m.)</label>
+                <input type="number" class="form-control" id="edit-taxa" min="0.01" max="99" step="0.001" required />
+              </div>
+              <div class="col-6">
+                <label for="edit-prazo" class="form-label">Prazo (meses)</label>
+                <input type="number" class="form-control" id="edit-prazo" min="1" max="600" required />
+              </div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <label for="edit-data" class="form-label">Início (AAAA-MM)</label>
+                <input type="month" class="form-control" id="edit-data" required />
+              </div>
+              <div class="col-6">
+                <label for="edit-modelo" class="form-label">Sistema</label>
+                <select class="form-select" id="edit-modelo" required>
+                  <option value="SAC">SAC</option>
+                  <option value="PRICE">PRICE</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="edit-erro" class="alert alert-danger d-none py-2 mt-3" role="alert"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btn-salvar-edicao">
+              <i class="bi bi-check-lg me-1"></i>Salvar e recalcular
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TOAST ════════════════════════════════════════════════════════════ -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="app-toast" class="toast align-items-center border-0" role="alert" aria-live="assertive">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-mensagem"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bibliotecas locais -->
+  <script src="vendor/bootstrap.bundle.min.js"></script>
+  <script src="vendor/chart.umd.min.js"></script>
+
+  <!-- Módulos da aplicação (a ordem importa: api → utilitários → telas → boot) -->
+  <script src="js/api.js"></script>
+  <script src="js/grafico.js"></script>
+  <script src="js/indicadores.js"></script>
+  <script src="js/financiamentos.js"></script>
+  <script src="js/amortizacoes.js"></script>
+  <script src="js/simulacoes.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

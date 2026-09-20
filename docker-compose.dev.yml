@@ -1,0 +1,18 @@
+# docker-compose.dev.yml
+#
+# Sobreposição para desenvolvimento: constrói a API a partir do código-fonte
+# em vez de puxar a imagem do Docker Hub.
+#
+# Exige os dois repositórios clonados lado a lado na mesma pasta:
+#
+#     ~/projetos/
+#       ├── software-architecture-mvp-front/   ← você está aqui
+#       └── software-architecture-mvp-api/
+#
+# Uso:
+#     docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+
+services:
+  api:
+    build: ../software-architecture-mvp-api
+    image: sarawolfp/software-architecture-mvp-api:dev
