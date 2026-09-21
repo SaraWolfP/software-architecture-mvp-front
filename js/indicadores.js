@@ -139,7 +139,7 @@ function renderizarBarraIndicadores(indicadores, origem) {
     // sem esse sinal o usuário digita exatamente o número do card e estranha
     // que a comparação de taxa não o considere idêntico à Selic.
     const mensal = indicador.periodicidade === 'anual'
-      ? `≈ ${formatarPercentual(indicador.taxa_mensal)} a.m. equivalente`
+      ? `≈ ${formatarPercentual(indicador.taxa_mensal)} a.m.`
       : `Ref. ${formatarCompetenciaCurta(indicador.data_referencia)}`;
 
     coluna.innerHTML = `
