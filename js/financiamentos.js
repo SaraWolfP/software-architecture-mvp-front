@@ -271,7 +271,10 @@ function atualizarDicaDeTaxa() {
     return;
   }
 
-  const referencia = `Selic de ${formatarPercentual(selicMensal)} a.m.`;
+  // Quatro casas aqui, e não duas: é nesta linha que a comparação acontece, e
+  // com o valor arredondado a mensagem fica incoerente — quem digita o 1,09%
+  // que o card mostra precisa ver que a Selic cheia é 1,0875%.
+  const referencia = `Selic de ${formatarPercentual(selicMensal, 4)} a.m.`;
   const diferenca = (digitada - selicMensal) * 100;
   const modulo = Math.abs(diferenca).toFixed(2).replace('.', ',');
 

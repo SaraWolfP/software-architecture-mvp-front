@@ -35,7 +35,8 @@ const APRESENTACAO_INDICADORES = {
       'Selic acumulada no mês e anualizada na base 252 (série 4189 do Banco '
       + 'Central). Base 252 é a convenção brasileira de anualizar contando '
       + 'apenas dias úteis, já que Selic e CDI não rendem em fins de semana '
-      + 'nem feriados: (1 + taxa diária)^252 − 1.',
+      + 'nem feriados: (1 + taxa diária)^252 − 1. A taxa mensal equivalente '
+      + 'é exibida arredondada para duas casas; o cálculo usa o valor cheio.',
     icone: 'bi-bank',
     cor: '#7048e8',
   },
@@ -134,8 +135,11 @@ function renderizarBarraIndicadores(indicadores, origem) {
 
     indicadoresCarregados[indicador.nome] = indicador;
 
+    // O "≈" não é enfeite: a mensal exibida é arredondada para duas casas, e
+    // sem esse sinal o usuário digita exatamente o número do card e estranha
+    // que a comparação de taxa não o considere idêntico à Selic.
     const mensal = indicador.periodicidade === 'anual'
-      ? `${formatarPercentual(indicador.taxa_mensal)} a.m. equivalente`
+      ? `≈ ${formatarPercentual(indicador.taxa_mensal)} a.m. equivalente`
       : `Ref. ${formatarCompetenciaCurta(indicador.data_referencia)}`;
 
     coluna.innerHTML = `
