@@ -71,8 +71,8 @@ function formatarPercentual(valor, casas = 2) {
  */
 function formatarCompetenciaCurta(anoMes) {
   const [ano, mes] = anoMes.split('-');
-  const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun',
-                 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
   return `${meses[parseInt(mes, 10) - 1]}/${ano.slice(2)}`;
 }
 
