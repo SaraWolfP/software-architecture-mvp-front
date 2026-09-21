@@ -18,19 +18,21 @@ const sparklines = {};
 const APRESENTACAO_INDICADORES = {
   CDI: {
     rotulo: 'CDI',
-    descricao: 'acumulado no mês',
+    descricao: 'Acumulado no mês',
     icone: 'bi-graph-up-arrow',
     cor: '#00b4d8',
   },
   SELIC: {
     rotulo: 'Selic',
-    descricao: 'meta anualizada',
+    // A série 4189 é a Selic acumulada no mês e anualizada na base 252 —
+    // não é a meta definida pelo Copom, que é outra série (432).
+    descricao: 'Anualizada, base 252',
     icone: 'bi-bank',
     cor: '#7048e8',
   },
   IPCA: {
     rotulo: 'IPCA',
-    descricao: 'inflação do mês',
+    descricao: 'Inflação do mês',
     icone: 'bi-basket',
     cor: '#f9a825',
   },
@@ -109,7 +111,7 @@ function renderizarBarraIndicadores(indicadores, origem) {
               <i class="bi ${meta.icone} me-1"></i>${meta.rotulo}
             </p>
             <p class="indicador-valor text-muted">—</p>
-            <p class="indicador-sub">indisponível</p>
+            <p class="indicador-sub">Indisponível</p>
           </div>
         </div>
       `;
@@ -121,7 +123,7 @@ function renderizarBarraIndicadores(indicadores, origem) {
 
     const mensal = indicador.periodicidade === 'anual'
       ? `${formatarPercentual(indicador.taxa_mensal)} a.m. equivalente`
-      : `ref. ${formatarCompetenciaCurta(indicador.data_referencia)}`;
+      : `Ref. ${formatarCompetenciaCurta(indicador.data_referencia)}`;
 
     coluna.innerHTML = `
       <div class="card indicador-card" style="--cor-indicador:${meta.cor}">
@@ -158,7 +160,7 @@ function renderizarBarraIndicadores(indicadores, origem) {
 
     selo.className = `badge origem-badge ${emCache ? 'origem-cache' : 'origem-bcb'}`;
     selo.innerHTML = emCache
-      ? `<i class="bi bi-database me-1"></i>cache local · ${formatarCarimbo(carimbo)}`
+      ? `<i class="bi bi-database me-1"></i>Cache local · ${formatarCarimbo(carimbo)}`
       : `<i class="bi bi-broadcast me-1"></i>Banco Central · ${formatarCarimbo(carimbo)}`;
     selo.title = emCache
       ? 'O Banco Central não respondeu. Exibindo o último valor guardado localmente.'

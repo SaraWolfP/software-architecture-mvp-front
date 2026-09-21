@@ -68,7 +68,7 @@ function atualizarResumo(parcelas, amortizacoes = [], resumoApi = {}) {
 
   if (el('resumo-parcelas-sub')) {
     const plural = numeroParcelas !== 1 ? 's' : '';
-    el('resumo-parcelas-sub').textContent = `mese${plural} restante${plural}`;
+    el('resumo-parcelas-sub').textContent = `Mese${plural} restante${plural}`;
   }
 
   // O total de juros vem do back-end, que decompõe cada parcela no cálculo.

@@ -67,7 +67,7 @@ function renderizarResultadoSimulacao(resultado) {
         <i class="bi ${meta.icone} veredito-icone"></i>
         <div>
           <h3 class="veredito-titulo mb-0">${meta.titulo}</h3>
-          <span class="veredito-diferenca">diferença de ${formatarReais(resultado.diferenca)}</span>
+          <span class="veredito-diferenca">Diferença de ${formatarReais(resultado.diferenca)}</span>
         </div>
       </div>
       <p class="veredito-mensagem mb-0">${escHtml(resultado.mensagem)}</p>
@@ -201,7 +201,7 @@ function renderizarTabelaSimulacoes(simulacoes, finId) {
       <td>
         <span class="badge badge-veredito ${meta.classe}">${escHtml(sim.veredito)}</span>
         ${sim.obsoleta
-          ? '<br/><small class="text-warning" title="O contrato mudou depois desta simulação.">desatualizada</small>'
+          ? '<br/><small class="text-warning" title="O contrato mudou depois desta simulação.">Desatualizada</small>'
           : ''}
       </td>
       <td class="text-end">${formatarReais(sim.diferenca)}</td>

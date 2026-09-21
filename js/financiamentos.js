@@ -144,7 +144,7 @@ function renderizarPaginacao() {
   const { pagina, total_paginas: totalPaginas, total } = paginacaoAtual;
 
   rodape.classList.toggle('d-none', totalPaginas <= 1);
-  info.textContent = `página ${pagina} de ${totalPaginas} · ${total} no total`;
+  info.textContent = `Página ${pagina} de ${totalPaginas} · ${total} no total`;
   anterior.disabled = pagina <= 1;
   proxima.disabled = pagina >= totalPaginas;
 }
