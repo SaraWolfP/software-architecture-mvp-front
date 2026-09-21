@@ -261,6 +261,10 @@ async function recarregarIndicadores(forcar = false) {
     const { indicadores, origem } = await listarIndicadores();
     renderizarBarraIndicadores(indicadores, origem);
 
+    // A dica de taxa depende da Selic. Se o usuário já tiver digitado algo
+    // antes de os indicadores chegarem, ela só apareceria na próxima tecla.
+    atualizarDicaDeTaxa();
+
     if (origem === 'cache_vencido') {
       mostrarToast(
         'O Banco Central não respondeu. Exibindo os últimos valores guardados, '

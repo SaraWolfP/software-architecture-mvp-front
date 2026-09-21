@@ -244,24 +244,51 @@ function registrarFormFinanciamento() {
   });
 
   // Dica de mercado: compara a taxa digitada com a Selic vinda do Banco Central.
-  const campoTaxa = document.getElementById('fin-taxa');
+  document.getElementById('fin-taxa')
+    ?.addEventListener('input', atualizarDicaDeTaxa);
+}
+
+/**
+ * Compara a taxa digitada com a Selic corrente e escreve a dica sob o campo.
+ *
+ * A diferença é expressa em **pontos percentuais**, não em variação relativa.
+ * Duas razões: é assim que se comparam taxas, e a variação relativa produzia
+ * mensagens absurdas — uma taxa de 1,09% contra uma Selic de 1,0875% virava
+ * "0% acima da Selic", tecnicamente verdade depois do arredondamento e
+ * completamente inútil para quem lê.
+ */
+function atualizarDicaDeTaxa() {
+  const campo = document.getElementById('fin-taxa');
   const dica = document.getElementById('fin-taxa-dica');
+  if (!campo || !dica) return;
 
-  campoTaxa?.addEventListener('input', () => {
-    const selicMensal = taxaMensalDe('SELIC');
-    const digitada = parseFloat(campoTaxa.value) / 100;
+  const selicMensal = taxaMensalDe('SELIC');
+  const digitada = parseFloat(campo.value) / 100;
 
-    if (!selicMensal || Number.isNaN(digitada) || digitada <= 0) {
-      dica.textContent = '';
-      return;
-    }
+  if (!selicMensal || Number.isNaN(digitada) || digitada <= 0) {
+    dica.className = 'form-text';
+    dica.textContent = '';
+    return;
+  }
 
-    const diferenca = ((digitada / selicMensal - 1) * 100).toFixed(0);
-    dica.className = digitada > selicMensal ? 'form-text text-danger' : 'form-text text-success';
-    dica.textContent = digitada > selicMensal
-      ? `${diferenca}% acima da Selic (${formatarPercentual(selicMensal)} a.m.)`
-      : `abaixo da Selic (${formatarPercentual(selicMensal)} a.m.)`;
-  });
+  const referencia = `Selic de ${formatarPercentual(selicMensal)} a.m.`;
+  const diferenca = (digitada - selicMensal) * 100;
+  const modulo = Math.abs(diferenca).toFixed(2).replace('.', ',');
+
+  // Abaixo de 0,05 p.p. a diferença é ruído para uma comparação de referência.
+  if (Math.abs(diferenca) < 0.05) {
+    dica.className = 'form-text text-muted';
+    dica.textContent = `Praticamente igual à ${referencia}`;
+    return;
+  }
+
+  if (diferenca > 0) {
+    dica.className = 'form-text text-danger';
+    dica.textContent = `${modulo} p.p. acima da ${referencia}`;
+  } else {
+    dica.className = 'form-text text-success';
+    dica.textContent = `${modulo} p.p. abaixo da ${referencia}`;
+  }
 }
 
 /* ── Edição via PUT ─────────────────────────────────────────── */
