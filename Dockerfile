@@ -41,10 +41,17 @@ LABEL org.opencontainers.image.source="https://github.com/SaraWolfP/software-arc
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY index.html /usr/share/nginx/html/
-COPY css/       /usr/share/nginx/html/css/
-COPY js/        /usr/share/nginx/html/js/
-COPY --from=vendor /build/vendor/ /usr/share/nginx/html/vendor/
+# O --chmod não é detalhe: o COPY preserva o modo do arquivo na máquina de
+# quem constrói, e o nginx roda como usuário 'nginx'. Um arquivo que esteja
+# 600 no host chega 600 na imagem, o worker não consegue lê-lo e a resposta
+# é 403 Forbidden — mesmo com tudo no lugar certo.
+COPY --chmod=644 index.html /usr/share/nginx/html/
+COPY --chmod=644 css/       /usr/share/nginx/html/css/
+COPY --chmod=644 js/        /usr/share/nginx/html/js/
+COPY --from=vendor --chmod=644 /build/vendor/ /usr/share/nginx/html/vendor/
+
+# Diretórios precisam do bit de execução para serem atravessados.
+RUN find /usr/share/nginx/html -type d -exec chmod 755 {} +
 
 EXPOSE 80
 
