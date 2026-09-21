@@ -155,16 +155,20 @@ function renderizarBarraIndicadores(indicadores, origem) {
   });
 
   if (selo) {
-    const emCache = origem === 'cache' || origem === 'misto';
+    // Servir do cache dentro do TTL é o funcionamento normal e não merece
+    // alarde: o dado veio do Banco Central, só não foi relido agora. O aviso
+    // fica reservado ao cache vencido, quando o BCB de fato não respondeu.
+    const degradado = origem === 'cache_vencido';
     const carimbo = indicadores.find((i) => i.atualizado_em)?.atualizado_em;
 
-    selo.className = `badge origem-badge ${emCache ? 'origem-cache' : 'origem-bcb'}`;
-    selo.innerHTML = emCache
+    selo.className = `badge origem-badge ${degradado ? 'origem-cache' : 'origem-bcb'}`;
+    selo.innerHTML = degradado
       ? `<i class="bi bi-database me-1"></i>Cache local · ${formatarCarimbo(carimbo)}`
       : `<i class="bi bi-broadcast me-1"></i>Banco Central · ${formatarCarimbo(carimbo)}`;
-    selo.title = emCache
-      ? 'O Banco Central não respondeu. Exibindo o último valor guardado localmente.'
-      : 'Dados lidos agora da API do Banco Central.';
+    selo.title = degradado
+      ? 'O Banco Central não respondeu. Exibindo o último valor guardado localmente, '
+        + 'que pode estar desatualizado.'
+      : `Dados do Banco Central, lidos em ${formatarCarimbo(carimbo)}.`;
   }
 }
 
@@ -257,9 +261,10 @@ async function recarregarIndicadores(forcar = false) {
     const { indicadores, origem } = await listarIndicadores();
     renderizarBarraIndicadores(indicadores, origem);
 
-    if (origem === 'cache') {
+    if (origem === 'cache_vencido') {
       mostrarToast(
-        'O Banco Central não respondeu. Exibindo os últimos valores guardados.',
+        'O Banco Central não respondeu. Exibindo os últimos valores guardados, '
+        + 'que podem estar desatualizados.',
         'warning'
       );
     }
