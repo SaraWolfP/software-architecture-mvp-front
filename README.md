@@ -170,7 +170,7 @@ Convenções adotadas: `kebab-case` para arquivos e classes CSS, `camelCase` par
 
 Sobe a interface, a API e o banco de uma vez. **Não precisa clonar o outro repositório nem ter Python instalado**: a imagem da API vem do Docker Hub.
 
-**Pré-requisito:** [Docker](https://docs.docker.com/get-docker/) com Docker Compose v2.
+**Pré-requisito:** [Docker](https://docs.docker.com/get-docker/) com **Docker Compose v2** — o comando é `docker compose` (com espaço), não `docker-compose`. Confirme com `docker compose version`.
 
 ```bash
 git clone https://github.com/SaraWolfP/software-architecture-mvp-front.git
@@ -187,6 +187,28 @@ Aguarde a API ficar saudável (o `front` só sobe depois) e acesse:
 | Documentação da API (Swagger) | http://localhost:5001/apidocs |
 
 Para encerrar: `Ctrl+C`, e `docker compose down` para remover os containers. Os dados ficam no volume `dados-api`; use `docker compose down -v` para apagá-los também.
+
+#### Se alguma porta já estiver em uso
+
+O Docker aborta com `bind: address already in use` e nada sobe. A porta `8080` é disputada com Jenkins, Tomcat e vários servidores de desenvolvimento. Basta trocar o **primeiro** número de cada par no `docker-compose.yml` — o segundo é a porta dentro do container e não deve mudar:
+
+```yaml
+  api:
+    ports:
+      - "5001:5000"    # troque 5001 se precisar
+  front:
+    ports:
+      - "8081:80"      # era 8080
+```
+
+Depois acesse a interface na porta nova. Para descobrir o que está ocupando uma porta:
+
+```bash
+lsof -i :8080            # macOS e Linux
+netstat -ano | find "8080"   # Windows
+```
+
+> A porta da API já é `5001` no host justamente porque o AirPlay Receiver do macOS ocupa a `5000` por padrão.
 
 ### Opção 2 — Docker, com a API construída localmente
 
