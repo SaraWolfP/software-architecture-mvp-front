@@ -19,6 +19,10 @@ const APRESENTACAO_INDICADORES = {
   CDI: {
     rotulo: 'CDI',
     descricao: 'Acumulado no mês',
+    explicacao:
+      'Certificado de Depósito Interbancário acumulado no mês (série 4390 do '
+      + 'Banco Central). É a taxa de referência da renda fixa no Brasil, e o '
+      + 'parâmetro usado aqui para o cenário "investir".',
     icone: 'bi-graph-up-arrow',
     cor: '#00b4d8',
   },
@@ -26,13 +30,22 @@ const APRESENTACAO_INDICADORES = {
     rotulo: 'Selic',
     // A série 4189 é a Selic acumulada no mês e anualizada na base 252 —
     // não é a meta definida pelo Copom, que é outra série (432).
-    descricao: 'Anualizada, base 252',
+    descricao: 'Taxa ao ano',
+    explicacao:
+      'Selic acumulada no mês e anualizada na base 252 (série 4189 do Banco '
+      + 'Central). Base 252 é a convenção brasileira de anualizar contando '
+      + 'apenas dias úteis, já que Selic e CDI não rendem em fins de semana '
+      + 'nem feriados: (1 + taxa diária)^252 − 1.',
     icone: 'bi-bank',
     cor: '#7048e8',
   },
   IPCA: {
     rotulo: 'IPCA',
     descricao: 'Inflação do mês',
+    explicacao:
+      'Índice Nacional de Preços ao Consumidor Amplo, variação mensal (série '
+      + '433 do Banco Central). Aparece aqui como contexto: deflacionar as '
+      + 'duas estratégias pelo mesmo índice não muda qual delas vence.',
     icone: 'bi-basket',
     cor: '#f9a825',
   },
@@ -132,6 +145,10 @@ function renderizarBarraIndicadores(indicadores, origem) {
             <div>
               <p class="indicador-rotulo">
                 <i class="bi ${meta.icone} me-1"></i>${meta.rotulo}
+                <i class="bi bi-question-circle indicador-ajuda"
+                   tabindex="0" role="button"
+                   aria-label="O que é ${escHtml(meta.rotulo)}?"
+                   title="${escHtml(meta.explicacao)}"></i>
               </p>
               <p class="indicador-valor">${formatarPercentual(indicador.valor)}</p>
               <p class="indicador-sub">${meta.descricao} · ${mensal}</p>

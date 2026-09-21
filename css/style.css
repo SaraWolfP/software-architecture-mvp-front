@@ -870,3 +870,25 @@ body {
   .detalhes-simulacao { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
   .paginacao-info { font-size: 0.7rem; }
 }
+
+/* ── Ícone de ajuda nos cards de indicadores ─────────────────────────────
+   Explica os termos técnicos (base 252, CDI, IPCA) sem poluir o card:
+   discreto por padrão, ganha cor no hover e no foco por teclado.        */
+.indicador-ajuda {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: help;
+  margin-left: 0.15rem;
+  vertical-align: baseline;
+  transition: color 0.15s ease;
+}
+
+.indicador-ajuda:hover,
+.indicador-ajuda:focus-visible {
+  color: var(--cor-indicador, var(--teal));
+  outline: none;
+}
+
+.indicador-ajuda:focus-visible {
+  text-decoration: underline;
+}
