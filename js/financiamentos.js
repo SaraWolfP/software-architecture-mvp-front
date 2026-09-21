@@ -308,7 +308,7 @@ function abrirModalEdicao() {
   document.getElementById('edit-entrada').value = fin.entrada;
   document.getElementById('edit-taxa').value = (fin.taxa_juros * 100).toFixed(3);
   document.getElementById('edit-prazo').value = fin.prazo_meses;
-  document.getElementById('edit-data').value = fin.data_inicio;
+  definirCompetencia('edit-data', fin.data_inicio);
   document.getElementById('edit-modelo').value = fin.modelo;
   document.getElementById('edit-erro').classList.add('d-none');
 
@@ -435,11 +435,8 @@ function sugerirCompetenciaPadrao(parcelas) {
 
   const meio = parcelas[Math.floor(parcelas.length / 3)].data_parcela;
 
-  const campoAmortizacao = document.getElementById('amor-data');
-  const campoSimulacao = document.getElementById('sim-data');
-
-  if (campoAmortizacao && !campoAmortizacao.value) campoAmortizacao.value = meio;
-  if (campoSimulacao && !campoSimulacao.value) campoSimulacao.value = meio;
+  if (!obterCompetencia('amor-data')) definirCompetencia('amor-data', meio);
+  if (!obterCompetencia('sim-data')) definirCompetencia('sim-data', meio);
 }
 
 /* ── Deleção ────────────────────────────────────────────────── */

@@ -62,6 +62,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   ajustarLinkSwagger();
 
+  // Troca os <input type="month"> pelos seletores de mês e ano. Precisa vir
+  // antes dos handlers, que guardam referência aos campos.
+  instalarSeletoresDeCompetencia();
+
   // Handlers de formulários e controles.
   registrarFormFinanciamento();
   registrarEdicaoFinanciamento();

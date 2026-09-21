@@ -166,7 +166,7 @@ function prepararEdicaoAmortizacao(amor) {
   amortizacaoEmEdicao = amor.id;
 
   document.getElementById('amor-valor').value = amor.valor_amortizado;
-  document.getElementById('amor-data').value = amor.data_amortizacao;
+  definirCompetencia('amor-data', amor.data_amortizacao);
   document.getElementById('amor-tipo').value = amor.tipo;
 
   document.getElementById('header-form-amortizacao').innerHTML =
@@ -190,6 +190,7 @@ function cancelarEdicaoAmortizacao() {
   amortizacaoEmEdicao = null;
 
   document.getElementById('form-amortizacao')?.reset();
+  definirCompetencia('amor-data', '');
   document.getElementById('header-form-amortizacao').innerHTML =
     '<i class="bi bi-plus-circle-fill me-2"></i>Nova Amortização';
 

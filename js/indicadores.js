@@ -149,8 +149,9 @@ function renderizarBarraIndicadores(indicadores, origem) {
             <div>
               <p class="indicador-rotulo">
                 <i class="bi ${meta.icone} me-1"></i>${meta.rotulo}
-                <i class="bi bi-question-circle indicador-ajuda"
+                <i class="bi bi-question-circle-fill indicador-ajuda"
                    tabindex="0" role="button"
+                   data-bs-toggle="tooltip"
                    aria-label="O que é ${escHtml(meta.rotulo)}?"
                    title="${escHtml(meta.explicacao)}"></i>
               </p>
@@ -175,6 +176,8 @@ function renderizarBarraIndicadores(indicadores, origem) {
     }
   });
 
+  ativarTooltipsDeAjuda();
+
   if (selo) {
     // Servir do cache dentro do TTL é o funcionamento normal e não merece
     // alarde: o dado veio do Banco Central, só não foi relido agora. O aviso
@@ -191,6 +194,39 @@ function renderizarBarraIndicadores(indicadores, origem) {
         + 'que pode estar desatualizado.'
       : `Dados do Banco Central, lidos em ${formatarCarimbo(carimbo)}.`;
   }
+}
+
+/** Tooltips ativos, guardados para serem descartados antes de recriar. @type {Array} */
+let tooltipsDeAjuda = [];
+
+/**
+ * Ativa os tooltips do Bootstrap nos ícones de ajuda dos cards.
+ *
+ * O atributo `title` sozinho depende do tooltip nativo do sistema, que demora
+ * cerca de um segundo para aparecer, ignora o estilo da página e não funciona
+ * em toque. O componente do Bootstrap resolve os três casos — e já está
+ * carregado, junto com o Popper, no bundle em vendor/.
+ */
+function ativarTooltipsDeAjuda() {
+  // Os elementos antigos já saíram do DOM; descartar evita vazar instâncias.
+  tooltipsDeAjuda.forEach((tooltip) => {
+    try {
+      tooltip.dispose();
+    } catch {
+      /* elemento já removido — nada a fazer */
+    }
+  });
+  tooltipsDeAjuda = [];
+
+  if (typeof bootstrap === 'undefined' || !bootstrap.Tooltip) return;
+
+  document.querySelectorAll('.indicador-ajuda').forEach((elemento) => {
+    tooltipsDeAjuda.push(new bootstrap.Tooltip(elemento, {
+      placement: 'bottom',
+      customClass: 'tooltip-ajuda',
+      trigger: 'hover focus',
+    }));
+  });
 }
 
 /**

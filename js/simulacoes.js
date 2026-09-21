@@ -243,7 +243,7 @@ function prepararEdicaoSimulacao(sim) {
   simulacaoEmEdicao = sim.id;
 
   document.getElementById('sim-aporte').value = sim.valor_aporte;
-  document.getElementById('sim-data').value = sim.data_aporte;
+  definirCompetencia('sim-data', sim.data_aporte);
   document.getElementById('sim-indicador').value = sim.indicador;
   document.getElementById('sim-percentual').value = Math.round(sim.percentual_indicador * 100);
 
@@ -267,6 +267,7 @@ function cancelarEdicaoSimulacao() {
 
   document.getElementById('btn-cancelar-edicao-sim')?.classList.add('d-none');
   document.getElementById('form-simulacao')?.reset();
+  definirCompetencia('sim-data', '');
   document.getElementById('sim-percentual').value = 100;
 }
 

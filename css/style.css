@@ -875,20 +875,73 @@ body {
    Explica os termos técnicos (base 252, CDI, IPCA) sem poluir o card:
    discreto por padrão, ganha cor no hover e no foco por teclado.        */
 .indicador-ajuda {
-  font-size: 0.78rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  /* Mais escuro que o rótulo: em var(--text-muted) o ícone sumia dentro do
+     próprio texto e ninguém descobria que havia algo para consultar. */
+  color: var(--cor-indicador, var(--teal));
+  opacity: 0.55;
   cursor: help;
-  margin-left: 0.15rem;
+  margin-left: 0.25rem;
   vertical-align: baseline;
-  transition: color 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .indicador-ajuda:hover,
 .indicador-ajuda:focus-visible {
-  color: var(--cor-indicador, var(--teal));
+  opacity: 1;
   outline: none;
+}
+
+/* O tooltip padrão do Bootstrap tem 200px de largura máxima, estreito demais
+   para um parágrafo de explicação. */
+.tooltip-ajuda .tooltip-inner {
+  max-width: 320px;
+  text-align: left;
+  line-height: 1.45;
+  padding: 0.55rem 0.7rem;
+  background: var(--navy);
+}
+
+.tooltip-ajuda .tooltip-arrow::before {
+  border-bottom-color: var(--navy);
 }
 
 .indicador-ajuda:focus-visible {
   text-decoration: underline;
+}
+
+/* ── Seletor de competência (mês + ano) ──────────────────────────────────
+   Substitui o <input type="month"> nativo. Os dois selects se comportam
+   como um campo único: bordas internas colapsadas e foco acima do vizinho,
+   para a borda de destaque não ficar cortada pelo select ao lado.        */
+.competencia-grupo {
+  display: flex;
+  gap: 0;
+}
+
+.competencia-grupo .form-select {
+  position: relative;
+}
+
+.competencia-grupo .form-select:focus {
+  z-index: 2;
+}
+
+.competencia-mes {
+  flex: 1 1 60%;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.competencia-ano {
+  flex: 1 1 40%;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+
+/* O placeholder desabilitado fica em cinza, como um campo ainda não preenchido. */
+.competencia-grupo .form-select:invalid,
+.competencia-grupo .form-select option[value=""] {
+  color: var(--text-muted);
 }
