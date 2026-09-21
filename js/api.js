@@ -270,16 +270,6 @@ function listarIndicadores(ultimos = 12) {
   return apiFetch(`/indicadores/${montarQuery({ ultimos })}`);
 }
 
-/**
- * Busca a série histórica de um indicador via GET /indicadores/<nome>/historico
- *
- * @param {'CDI' | 'SELIC' | 'IPCA'} nome
- * @param {number} [ultimos=12]
- * @returns {Promise<Object>}
- */
-function buscarHistoricoIndicador(nome, ultimos = 12) {
-  return apiFetch(`/indicadores/${nome}/historico${montarQuery({ ultimos })}`);
-}
 
 /**
  * Força a releitura das séries no BCB via POST /indicadores/atualizar

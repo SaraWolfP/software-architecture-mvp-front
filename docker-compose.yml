@@ -19,7 +19,9 @@ services:
     container_name: simulador-api
     restart: unless-stopped
     ports:
-      - "5000:5000"          # publicada só para abrir o Swagger em /apidocs
+      # 5001 no host: o AirPlay Receiver do macOS ocupa a 5000 por padrão,
+      # e um conflito aqui impediria a stack inteira de subir.
+      - "5001:5000"
     volumes:
       - dados-api:/app/dados # o SQLite precisa sobreviver à recriação do container
     environment:

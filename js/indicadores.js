@@ -2,10 +2,11 @@
  * indicadores.js
  * Barra de indicadores econômicos no topo da aplicação.
  *
- * Os dados vêm da API, que por sua vez os busca no Banco Central. Quando a API
- * responde com `origem: "cache"`, a barra exibe um selo avisando que o BCB não
- * respondeu e o número exibido pode não ser o mais recente — é preferível um
- * dado carimbado a uma tela vazia.
+ * Os dados vêm da API, que por sua vez os busca no Banco Central. Servir do
+ * cache dentro do TTL é o funcionamento normal e não gera aviso; só quando a
+ * API responde `origem: "cache_vencido"` — BCB fora do ar e cache expirado — a
+ * barra troca o selo e alerta que o número pode estar desatualizado. É
+ * preferível um dado carimbado a uma tela vazia.
  */
 
 /** Indicadores carregados na última consulta, por nome. @type {Object<string, Object>} */

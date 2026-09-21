@@ -126,7 +126,7 @@ RESPOSTA CRUA DO BCB                    →  APÓS TRATAMENTO NA API
 - [Chart.js 4.4](https://www.chartjs.org/) — gráficos
 - [nginx](https://nginx.org/) 1.27 — servidor estático e proxy reverso da API
 
-As bibliotecas ficam em `vendor/` e são servidas pela própria aplicação. Nada é carregado de CDN em tempo de execução: um container que depende de CDN não é autocontido e a interface abre quebrada se a rede bloquear o domínio.
+As bibliotecas ficam em `vendor/`, **versionadas no repositório**, e são servidas pela própria aplicação. Nada é carregado de CDN em tempo de execução: um container que depende de CDN não é autocontido e a interface abre quebrada se a rede bloquear o domínio. O script `scripts/baixar-vendor.sh` existe apenas para atualizar as versões — não é necessário para rodar o projeto.
 
 ---
 
@@ -144,6 +144,7 @@ software-architecture-mvp-front/
 │   └── style.css               # Estilos da aplicação
 ├── js/
 │   ├── api.js                  # Todas as chamadas à API (fetch centralizado)
+│   ├── competencia.js          # Seletor de mês e ano das competências
 │   ├── grafico.js              # Gráfico de parcelas (Chart.js)
 │   ├── indicadores.js          # Barra de indicadores do Banco Central
 │   ├── financiamentos.js       # Cadastro, listagem paginada e edição
@@ -152,7 +153,7 @@ software-architecture-mvp-front/
 │   └── app.js                  # Inicialização e orquestração
 ├── scripts/
 │   └── baixar-vendor.sh        # Baixa Bootstrap, Icons e Chart.js
-├── vendor/                     # Bibliotecas locais (geradas pelo script)
+├── vendor/                     # Bibliotecas locais (versionadas no repositório)
 └── docs/
     ├── arquitetura.png         # Fluxograma da arquitetura
     ├── arquitetura.svg
@@ -183,20 +184,22 @@ Aguarde a API ficar saudável (o `front` só sobe depois) e acesse:
 | O quê | Endereço |
 |---|---|
 | **Interface** | http://localhost:8080 |
-| Documentação da API (Swagger) | http://localhost:5000/apidocs |
+| Documentação da API (Swagger) | http://localhost:5001/apidocs |
 
 Para encerrar: `Ctrl+C`, e `docker compose down` para remover os containers. Os dados ficam no volume `dados-api`; use `docker compose down -v` para apagá-los também.
 
-### Opção 2 — Docker, só a interface
+### Opção 2 — Docker, com a API construída localmente
 
-Se a API já estiver rodando em outro lugar:
+Para trabalhar nos dois repositórios ao mesmo tempo, com ambos clonados lado a lado:
 
 ```bash
-docker build -t simulador-front .
-docker run --rm -p 8080:80 simulador-front
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
-> A imagem espera alcançar a API pelo nome de host `api` na porta 5000. Fora do Compose, use `--network` ou ajuste o `proxy_pass` no `nginx.conf`.
+> Construir **só** a imagem da interface e rodá-la isolada não funciona: o
+> `nginx.conf` resolve `proxy_pass http://api:5000/` no momento em que carrega a
+> configuração, e sem o container `api` na mesma rede o nginx nem inicia
+> (`host not found in upstream`). Use sempre o Compose.
 
 ### Opção 3 — Ambiente local, sem Docker
 
@@ -207,15 +210,11 @@ docker run --rm -p 8080:80 simulador-front
 git clone https://github.com/SaraWolfP/software-architecture-mvp-front.git
 cd software-architecture-mvp-front
 
-# 2. Baixe as bibliotecas para vendor/ (uma única vez)
-chmod +x scripts/baixar-vendor.sh
-./scripts/baixar-vendor.sh
-
-# 3. Suba a API seguindo o README do repositório da API,
+# 2. Suba a API seguindo o README do repositório da API,
 #    em outro terminal, na porta 5000
 
-# 4. Sirva a interface
-npx serve -l 3000        # ou: python3 -m http.server 3000
+# 3. Sirva a interface
+python3 -m http.server 3000      # ou: npx serve -l 3000
 ```
 
 Acesse http://localhost:3000. Fora do nginx, `js/api.js` detecta o ambiente e aponta automaticamente para `http://127.0.0.1:5000`.
