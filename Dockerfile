@@ -55,5 +55,8 @@ RUN find /usr/share/nginx/html -type d -exec chmod 755 {} +
 
 EXPOSE 80
 
+# 127.0.0.1 e não "localhost": no Alpine, localhost resolve primeiro para o
+# IPv6 ::1, o nginx.conf só escuta em IPv4, e o wget do BusyBox não tenta o
+# endereço seguinte — o container fica "unhealthy" com o site funcionando.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+  CMD wget --quiet --tries=1 --spider http://127.0.0.1/ || exit 1
