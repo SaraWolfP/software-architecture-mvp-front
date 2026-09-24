@@ -247,11 +247,11 @@ Acesse http://localhost:3000. Fora do nginx, `js/api.js` detecta o ambiente e ap
 
 ## Roteiro de uso
 
-1. **Cadastre um financiamento** — ex.: imóvel de R$ 500.000, entrada de R$ 100.000, 1,00% a.m., 360 meses, SAC. A dica abaixo do campo de taxa compara o valor digitado com a Selic do dia.
+1. **Cadastre um financiamento** — ex.: imóvel de R$ 500.000, entrada de R$ 100.000, 1,20% a.m., 360 meses, SAC. A dica abaixo do campo de taxa compara o valor digitado com a Selic do dia.
 2. **Selecione-o na lista** para abrir o painel com cronograma e resumo.
 3. **Ligue "Separar juros e amortização"** no gráfico e observe que, nos primeiros anos, quase toda a parcela é juro.
 4. **Simule** — informe R$ 50.000 disponíveis, escolha CDI a 100% e compare as estratégias.
-5. **Mude para 130% do CDI** e veja o veredito virar: existe um ponto de indiferença, e ele depende da taxa. (Com o CDI de setembro/2026, a virada acontece para contratos acima de ~0,95% a.m.; abaixo disso, investir já vence a 100%.)
+5. **Mude para 130% do CDI** e veja o veredito virar: existe um ponto de indiferença, e ele depende da taxa. (Com o CDI de agosto/2026, 1,09% a.m., a virada acontece para contratos entre ~1,05% e ~1,35% a.m.; abaixo disso, investir já vence a 100%.)
 6. **Lance a amortização** de fato, e acompanhe o cronograma encolher.
 7. **Edite o contrato** e note que as simulações salvas passam a ser sinalizadas como desatualizadas.
 
