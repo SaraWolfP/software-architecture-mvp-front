@@ -327,13 +327,21 @@ function registrarFormSimulacao() {
         ? await atualizarSimulacao(financiamentoSelecionadoId, simulacaoEmEdicao, corpo)
         : await criarSimulacao(financiamentoSelecionadoId, corpo);
 
+      const eraEdicao = Boolean(simulacaoEmEdicao);
+
       renderizarResultadoSimulacao(resultado);
       mostrarToast(
-        simulacaoEmEdicao ? 'Simulação recalculada.' : 'Simulação concluída e salva.',
+        eraEdicao ? 'Simulação recalculada.' : 'Simulação concluída e salva.',
         'success'
       );
 
-      cancelarEdicaoSimulacao();
+      // Depois de uma simulação nova, os campos ficam preenchidos: o uso
+      // natural do painel é comparar cenários mudando um único valor — o
+      // percentual do CDI, por exemplo — e rodar de novo. Apagar tudo a cada
+      // clique obrigaria a redigitar aporte e competência para cada hipótese.
+      // Só a edição de uma simulação salva volta o formulário ao modo de criação.
+      if (eraEdicao) cancelarEdicaoSimulacao();
+
       await recarregarSimulacoes(financiamentoSelecionadoId);
     } catch (erro) {
       erroEl.textContent = erro.message;
@@ -387,7 +395,11 @@ async function recarregarSimulacoes(finId) {
 function limparPainelSimulacao() {
   graficoComparativo?.destroy();
   graficoComparativo = null;
-  simulacaoEmEdicao = null;
+
+  // Os campos persistem entre simulações do mesmo contrato, mas não entre
+  // contratos: o aporte e a competência do anterior podem cair fora do prazo
+  // do novo. Trocar de financiamento é a fronteira natural para zerar.
+  cancelarEdicaoSimulacao();
 
   document.getElementById('resultado-simulacao')?.classList.add('d-none');
   document.getElementById('simulacao-sem-resultado')?.classList.remove('d-none');
